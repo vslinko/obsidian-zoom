@@ -30,6 +30,29 @@ You can activate this plugin within Obsidian by doing the following:
 
 Download `main.js`, `manifest.json`, `styles.css` from the [latest release](https://github.com/vslinko/obsidian-zoom/releases/latest) and put them into `<vault>/.obsidian/plugins/obsidian-zoom` folder.
 
+## Features
+
+### Zoom in to a specific list or heading
+
+Hide everything except the list/heading and its content.
+
+| Command                      |       Default hotkey (Windows/Linux)        |             Default hotkey (MacOS)             |
+| ---------------------------- | :-----------------------------------------: | :--------------------------------------------: |
+| Zoom in                      |         <kbd>Ctrl</kbd><kbd>.</kbd>         |         <kbd>Command</kbd><kbd>.</kbd>         |
+| Zoom out the entire document | <kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>.</kbd> | <kbd>Command</kbd><kbd>Shift</kbd><kbd>.</kbd> |
+
+| Setting                                | Default value |
+| -------------------------------------- | :-----------: |
+| Zooming in when clicking on the bullet |    `true`     |
+
+### Debug mode
+
+Open DevTools (Command+Option+I or Control+Shift+I) to copy the debug logs.
+
+| Setting    | Default value |
+| ---------- | :-----------: |
+| Debug mode |    `false`    |
+
 ## Pricing
 
 This plugin is free for everyone, however, if you would like to thank me

@@ -13,7 +13,7 @@ export class ZoomFeature implements IFeature {
   async load() {
     this.plugin.addCommand({
       id: "zoom-in",
-      name: "Zoom in to the current list item",
+      name: "Zoom in",
       callback: this.obsidianService.createCommandCallback(
         this.zoomService.zoomIn.bind(this.zoomService)
       ),

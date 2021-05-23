@@ -26,6 +26,8 @@ export default class ObsidianZoomPlugin extends Plugin {
   async onload() {
     console.log(`Loading obsidian-zoom`);
 
+    (window as any).ObsidianZoomPlugin = this;
+
     this.settingsService = new SettingsService(this);
     await this.settingsService.load();
 
@@ -65,6 +67,8 @@ export default class ObsidianZoomPlugin extends Plugin {
 
   async onunload() {
     console.log(`Unloading obsidian-zoom`);
+
+    delete (window as any).ObsidianZoomPlugin;
 
     for (const feature of this.features) {
       await feature.unload();

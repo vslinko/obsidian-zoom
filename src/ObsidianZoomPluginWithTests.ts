@@ -78,19 +78,12 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
   async load() {
     await super.load();
 
-    (window as any).ObsidianZoomPlugin = this;
-
     if (process.env.TEST_PLATFORM) {
       setImmediate(async () => {
         await this.wait(1000);
         this.connect();
       });
     }
-  }
-
-  async onunload() {
-    await super.onunload();
-    delete (window as any).ObsidianZoomPlugin;
   }
 
   async prepareForTests() {

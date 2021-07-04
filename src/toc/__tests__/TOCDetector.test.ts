@@ -16,9 +16,9 @@ const editor = makeEditor(`
 ## 3
 
 - 5
-  - 6
+  1. 6
     - 7
-  - 8
+  2. 8
     - 9
 `);
 

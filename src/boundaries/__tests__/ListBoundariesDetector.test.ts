@@ -37,6 +37,11 @@ const editor = makeEditor(`
   24
 
 - 26
+  1. 27
+    1. 28
+  2. 29
+
+- 31
 `);
 
 describe("ListBoundariesDetector#detect", () => {
@@ -96,15 +101,27 @@ describe("ListBoundariesDetector#detect", () => {
     });
   });
 
-  test("should detect last list", () => {
-    const d = new ListBoundariesDetector(editor, 26);
+  test("should detect numeric list", () => {
+    const d = new ListBoundariesDetector(editor, 27);
 
     const result = d.detect();
 
     expect(result).toEqual({
       type: "list",
-      startLine: 26,
-      endLine: 28,
+      startLine: 27,
+      endLine: 29,
+    });
+  });
+
+  test("should detect last list", () => {
+    const d = new ListBoundariesDetector(editor, 31);
+
+    const result = d.detect();
+
+    expect(result).toEqual({
+      type: "list",
+      startLine: 31,
+      endLine: 33,
     });
   });
 });

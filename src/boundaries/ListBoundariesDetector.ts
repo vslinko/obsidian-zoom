@@ -79,7 +79,7 @@ export class ListBoundariesDetector {
   }
 
   private parseLine(text: string) {
-    const matches = /^([ \t]*)([-+*] )?(.*)$/.exec(text);
+    const matches = /^([ \t]*)((?:[-+*]|\d+\.) )?(.*)$/.exec(text);
 
     if (!matches) {
       return null;

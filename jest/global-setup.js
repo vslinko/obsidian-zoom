@@ -67,7 +67,7 @@ async function prepareObsidian() {
 async function prepareVault() {
   debug(`Prepare vault`);
 
-  const vaultConfigFilePath = ".obsidian/config";
+  const vaultConfigFilePath = ".obsidian/app.json";
   const vaultPluginDir = ".obsidian/plugins/obsidian-zoom";
 
   if (!fs.existsSync(vaultConfigFilePath)) {

@@ -33,3 +33,27 @@ text
  #hidden
 text #hidden
 ```
+
+# qwe
+
+```md
+qwe
+
+\```
+# qwe|
+\```
+
+qwe
+```
+
+- execute: `obsidian-zoom:zoom-in`
+
+```md
+qwe
+
+\```
+# qwe|
+\```
+
+qwe
+```

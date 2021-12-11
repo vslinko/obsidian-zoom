@@ -78,7 +78,7 @@ for (const file of files) {
       } else if (sm === "inside-before" && line.startsWith("```")) {
         sm = "looking-for-actions";
       } else if (sm === "inside-before") {
-        desc.before.push(line);
+        desc.before.push(line.replace(/^\\`/, '`'));
       } else if (
         sm === "looking-for-actions" &&
         /^- keydown: `[^`]+`$/.test(line)
@@ -102,7 +102,7 @@ for (const file of files) {
         desc = makeTestDesc();
         sm = "looking-for-title";
       } else if (sm === "inside-after") {
-        desc.after.push(line);
+        desc.after.push(line.replace(/^\\`/, '`'));
       }
     }
   });

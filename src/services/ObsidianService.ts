@@ -1,10 +1,29 @@
-import { App, MarkdownView } from "obsidian";
+import { App, CachedMetadata, MarkdownView, WorkspaceLeaf } from "obsidian";
 
 export class ObsidianService {
   constructor(private app: App) {}
 
   getActiveLeafDisplayText() {
     return this.app.workspace.activeLeaf.getDisplayText();
+  }
+
+  getCacheByEditor(editor: CodeMirror.Editor): CachedMetadata | null {
+    let leaf: WorkspaceLeaf | null = null;
+
+    this.app.workspace.iterateAllLeaves((l) => {
+      const view = l.view as any;
+      if (view && view.sourceMode && view.sourceMode.cmEditor === editor) {
+        leaf = l;
+      }
+    });
+
+    if (!leaf) {
+      return null;
+    }
+
+    return this.app.metadataCache.getFileCache(
+      (leaf.view as MarkdownView).file
+    );
   }
 
   createCommandCallback(cb: (editor: CodeMirror.Editor) => boolean) {

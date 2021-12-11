@@ -1,41 +1,42 @@
+import { CachedMetadata } from "obsidian";
 import { IBoundaries } from "./IBoundaries";
 
-export interface IEditor {
-  getLine(n: number): string;
-  lastLine(): number;
-}
-
 export class HeadingBoundariesDetector {
-  constructor(private editor: IEditor, private startLine: number) {}
+  constructor(private cache: CachedMetadata, private startLine: number) {}
 
   detect(): IBoundaries | null {
-    const startLevel = this.getHeadingLevel(
-      this.editor.getLine(this.startLine)
-    );
-
-    if (startLevel < 1) {
+    if (!this.cache.headings || !this.cache.sections) {
       return null;
     }
 
-    let endLine = this.startLine + 1;
-    while (endLine <= this.editor.lastLine()) {
-      const endLevel = this.getHeadingLevel(this.editor.getLine(endLine));
-      if (endLevel > 0 && endLevel <= startLevel) {
-        break;
-      }
-      endLine++;
+    const heading = this.cache.headings
+      .filter(
+        (h) =>
+          h.position.start.line <= this.startLine &&
+          h.position.end.line >= this.startLine
+      )
+      .pop();
+
+    if (!heading) {
+      return null;
     }
 
-    return { type: "heading", startLine: this.startLine, endLine };
-  }
+    const nextHeading = this.cache.headings
+      .filter(
+        (h) =>
+          h.level <= heading.level &&
+          h.position.start.line > heading.position.end.line
+      )
+      .shift();
 
-  private getHeadingLevel(text: string): number {
-    const matches = /^(#+) /.exec(text);
+    const lastSection = this.cache.sections.concat().pop();
 
-    if (!matches) {
-      return 0;
-    }
-
-    return matches[1].length;
+    return {
+      type: "heading",
+      startLine: heading.position.start.line,
+      endLine: nextHeading
+        ? nextHeading.position.start.line
+        : lastSection.position.end.line + 1,
+    };
   }
 }

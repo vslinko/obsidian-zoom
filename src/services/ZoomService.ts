@@ -107,8 +107,14 @@ export class ZoomService {
     editor: CodeMirror.Editor,
     lineNo: number
   ): IBoundaries | null {
+    const cache = this.obsidianService.getCacheByEditor(editor);
+
+    if (!cache) {
+      return null;
+    }
+
     const headingBoundariesDetector = new HeadingBoundariesDetector(
-      editor,
+      cache,
       lineNo
     );
     const headingBoundaries = headingBoundariesDetector.detect();
@@ -117,7 +123,7 @@ export class ZoomService {
       return headingBoundaries;
     }
 
-    const listBoundariesDetector = new ListBoundariesDetector(editor, lineNo);
+    const listBoundariesDetector = new ListBoundariesDetector(cache, lineNo);
     return listBoundariesDetector.detect();
   }
 }

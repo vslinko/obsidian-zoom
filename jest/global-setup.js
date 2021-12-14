@@ -80,7 +80,11 @@ async function prepareVault() {
   if (!vaultConfig.enabledPlugins) {
     vaultConfig.enabledPlugins = [];
   }
+  vaultConfig.foldHeading = true;
   vaultConfig.foldIndent = true;
+  vaultConfig.useTab = false;
+  vaultConfig.tabSize = 2;
+  vaultConfig.legacyEditor = false;
   if (!vaultConfig.enabledPlugins.includes("obsidian-zoom")) {
     debug(`  Enabling obsidian-zoom plugin`);
     vaultConfig.enabledPlugins.push("obsidian-zoom");

@@ -1,22 +1,20 @@
-import { SettingsService } from "../services/SettingsService";
-import { IFeature } from "./IFeature";
+import { Feature } from "./Feature";
 
-export class ListsStylesFeature implements IFeature {
-  constructor(private settingsService: SettingsService) {}
+import { SettingsService } from "../services/SettingsService";
+
+export class ListsStylesFeature implements Feature {
+  constructor(private settings: SettingsService) {}
 
   async load() {
-    if (this.settingsService.zoomOnClick) {
+    if (this.settings.zoomOnClick) {
       this.addZoomStyles();
     }
 
-    this.settingsService.onChange(
-      "zoomOnClick",
-      this.onZoomOnClickSettingChange
-    );
+    this.settings.onChange("zoomOnClick", this.onZoomOnClickSettingChange);
   }
 
   async unload() {
-    this.settingsService.removeCallback(
+    this.settings.removeCallback(
       "zoomOnClick",
       this.onZoomOnClickSettingChange
     );

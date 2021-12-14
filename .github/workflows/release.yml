@@ -23,6 +23,8 @@ jobs:
           sudo hdiutil attach Obsidian-0.12.19-universal.dmg
           sudo cp -rf "/Volumes/Obsidian 0.12.19-universal/Obsidian.app" /Applications
           sudo hdiutil detach "/Volumes/Obsidian 0.12.19-universal"
+      - name: Lint
+        run: npm run lint
       - name: Test
         run: |
           npm run build-with-tests

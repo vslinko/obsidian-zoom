@@ -1,22 +1,100 @@
-import { Plugin_2 } from "obsidian";
-import { ZoomService } from "src/services/ZoomService";
-import { ObsidianService } from "../services/ObsidianService";
-import { IFeature } from "./IFeature";
+import { Notice, Plugin_2 } from "obsidian";
 
-export class ZoomFeature implements IFeature {
-  constructor(
-    private plugin: Plugin_2,
-    private obsidianService: ObsidianService,
-    private zoomService: ZoomService
-  ) {}
+import { EditorState } from "@codemirror/state";
+import { EditorView } from "@codemirror/view";
+
+import { Feature } from "./Feature";
+import { isFoldingEnabled } from "./utils/isFoldingEnabled";
+
+import { CalculateRangeForZooming } from "../logic/CalculateRangeForZooming";
+import { KeepOnlyZoomedContentVisible } from "../logic/KeepOnlyZoomedContentVisible";
+import { LoggerService } from "../services/LoggerService";
+
+export type ZoomInCallback = (view: EditorView, pos: number) => void;
+export type ZoomOutCallback = (view: EditorView) => void;
+
+export class ZoomFeature implements Feature {
+  private zoomInCallbacks: ZoomInCallback[] = [];
+  private zoomOutCallbacks: ZoomOutCallback[] = [];
+
+  private keepOnlyZoomedContentVisible = new KeepOnlyZoomedContentVisible(
+    this.logger
+  );
+
+  private calculateRangeForZooming = new CalculateRangeForZooming();
+
+  constructor(private plugin: Plugin_2, private logger: LoggerService) {}
+
+  public calculateVisibleContentRange(state: EditorState) {
+    return this.keepOnlyZoomedContentVisible.calculateVisibleContentRange(
+      state
+    );
+  }
+
+  public calculateHiddenContentRanges(state: EditorState) {
+    return this.keepOnlyZoomedContentVisible.calculateHiddenContentRanges(
+      state
+    );
+  }
+
+  public notifyAfterZoomIn(cb: ZoomInCallback) {
+    this.zoomInCallbacks.push(cb);
+  }
+
+  public notifyAfterZoomOut(cb: ZoomOutCallback) {
+    this.zoomOutCallbacks.push(cb);
+  }
+
+  public zoomIn(view: EditorView, pos: number) {
+    if (!isFoldingEnabled(this.plugin.app)) {
+      new Notice(
+        `In order to zoom, you must first enable "Fold heading" and "Fold indent" under Settings -> Editor`
+      );
+      return;
+    }
+
+    const range = this.calculateRangeForZooming.calculateRangeForZooming(
+      view.state,
+      pos
+    );
+
+    if (!range) {
+      return;
+    }
+
+    this.keepOnlyZoomedContentVisible.keepOnlyZoomedContentVisible(
+      view,
+      range.from,
+      range.to
+    );
+
+    for (const cb of this.zoomInCallbacks) {
+      cb(view, pos);
+    }
+  }
+
+  public zoomOut(view: EditorView) {
+    this.keepOnlyZoomedContentVisible.showAllContent(view);
+
+    for (const cb of this.zoomOutCallbacks) {
+      cb(view);
+    }
+  }
 
   async load() {
+    this.plugin.registerEditorExtension(
+      this.keepOnlyZoomedContentVisible.getExtension()
+    );
+
     this.plugin.addCommand({
       id: "zoom-in",
       name: "Zoom in",
-      callback: this.obsidianService.createCommandCallback(
-        this.zoomService.zoomIn.bind(this.zoomService)
-      ),
+      icon: "obsidian-zoom-zoom-in",
+      editorCallback: (editor) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const view: EditorView = (editor as any).cm;
+        this.zoomIn(view, view.state.selection.main.head);
+      },
       hotkeys: [
         {
           modifiers: ["Mod"],
@@ -28,9 +106,9 @@ export class ZoomFeature implements IFeature {
     this.plugin.addCommand({
       id: "zoom-out",
       name: "Zoom out the entire document",
-      callback: this.obsidianService.createCommandCallback(
-        this.zoomService.zoomOut.bind(this.zoomService)
-      ),
+      icon: "obsidian-zoom-zoom-out",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      editorCallback: (editor) => this.zoomOut((editor as any).cm),
       hotkeys: [
         {
           modifiers: ["Mod", "Shift"],

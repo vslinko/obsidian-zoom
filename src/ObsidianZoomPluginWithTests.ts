@@ -1,5 +1,11 @@
-import { MarkdownView } from "obsidian";
+import { editorEditorField } from "obsidian";
+
+import { foldEffect, foldedRanges } from "@codemirror/fold";
+import { EditorSelection, StateField } from "@codemirror/state";
+import { EditorView, runScopeHandlers } from "@codemirror/view";
+
 import ObsidianZoomPlugin from "./ObsidianZoomPlugin";
+import { ZoomFeature } from "./features/ZoomFeature";
 
 const keysMap: { [key: string]: number } = {
   Backspace: 8,
@@ -13,13 +19,14 @@ const keysMap: { [key: string]: number } = {
 };
 
 export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
-  private editor: CodeMirror.Editor;
+  private editorView: EditorView;
 
   wait(time: number) {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
 
   executeCommandById(id: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.app as any).commands.executeCommandById(id);
   }
 
@@ -72,7 +79,7 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
       throw new Error("Unknown key: " + e.code);
     }
 
-    (this.editor as any).triggerOnKeyDown(e);
+    runScopeHandlers(this.editorView, e as KeyboardEvent, "editor");
   }
 
   async load() {
@@ -103,9 +110,14 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
     }
     await this.wait(1000);
 
-    this.editor = (
-      this.app.workspace.getActiveViewOfType(MarkdownView) as any
-    ).sourceMode.cmEditor;
+    this.registerEditorExtension(
+      StateField.define({
+        create: (state) => {
+          this.editorView = state.field(editorEditorField);
+        },
+        update: () => {},
+      })
+    );
   }
 
   async connect() {
@@ -152,64 +164,62 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
     if (typeof state === "string") {
       state = state.split("\n");
     }
+
     if (Array.isArray(state)) {
       state = this.parseState(state);
     }
 
-    this.editor.setValue("");
-    this.editor.setValue(state.value);
-    this.editor.setSelections(
-      state.selections.map((s) => ({
-        anchor: s.from,
-        head: s.to,
-      }))
-    );
-    for (let l of state.folds) {
-      (this.editor as any).foldCode({ line: l, ch: 0 }, null, "fold");
-    }
+    this.editorView.dispatch({
+      changes: [{ from: 0, to: this.editorView.state.doc.length, insert: "" }],
+    });
+    this.editorView.dispatch({
+      changes: [{ from: 0, insert: state.value }],
+    });
+    this.editorView.dispatch({
+      selection: EditorSelection.create(
+        state.selections.map((s) => EditorSelection.range(s.anchor, s.head))
+      ),
+    });
+    this.editorView.dispatch({
+      effects: state.folds.map((f) =>
+        foldEffect.of({ from: f.from, to: f.to })
+      ),
+    });
   }
 
   getCurrentState(): IState {
     const hidden: number[] = [];
-    const folds = new Set<number>();
-    for (let l = this.editor.firstLine(); l <= this.editor.lastLine(); l++) {
-      const handle = this.editor.getLineHandle(l) as any;
-      const lineHidden =
-        handle &&
-        handle.wrapClass &&
-        handle.wrapClass.includes("zoom-plugin-hidden-row");
-      if (lineHidden) {
-        hidden.push(l);
-      }
 
-      const mark = this.editor
-        .findMarksAt({ line: l, ch: 0 })
-        .find((m) => (m as any).__isFold);
-      if (!mark) {
-        continue;
+    const f = this.features.find(
+      (f): f is ZoomFeature => f instanceof ZoomFeature
+    );
+
+    const hiddenRanges = f
+      ? f.calculateHiddenContentRanges(this.editorView.state)
+      : [];
+    for (const i of hiddenRanges) {
+      const lineFrom = this.editorView.state.doc.lineAt(i.from).number - 1;
+      const lineTo = this.editorView.state.doc.lineAt(i.to).number - 1;
+      for (let lineNo = lineFrom; lineNo <= lineTo; lineNo++) {
+        hidden.push(lineNo);
       }
-      const firstFoldingLine: CodeMirror.LineHandle = (mark as any).lines[0];
-      if (!firstFoldingLine) {
-        continue;
-      }
-      const lineNo = this.editor.getLineNumber(firstFoldingLine);
-      folds.add(lineNo);
+    }
+
+    const folds: IFold[] = [];
+    const iter = foldedRanges(this.editorView.state).iter();
+    while (iter.value !== null) {
+      folds.push({ from: iter.from, to: iter.to });
+      iter.next();
     }
 
     return {
       hidden,
-      folds: Array.from(folds.values()),
-      selections: this.editor.listSelections().map((range) => ({
-        from: {
-          line: range.from().line,
-          ch: range.from().ch,
-        },
-        to: {
-          line: range.to().line,
-          ch: range.to().ch,
-        },
+      folds,
+      selections: this.editorView.state.selection.ranges.map((r) => ({
+        anchor: r.anchor,
+        head: r.head,
       })),
-      value: this.editor.getValue(),
+      value: this.editorView.state.doc.sliceString(0),
     };
   }
 
@@ -222,60 +232,71 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
 
     const acc = content.reduce(
       (acc, line, lineNo) => {
-        if (line.includes("#folded")) {
-          line = line.replace("#folded", "").trim();
-          acc.folds.push(lineNo);
+        if (acc.foldFrom === null) {
+          const arrowIndex = line.indexOf(">");
+          if (arrowIndex >= 0) {
+            acc.foldFrom = acc.chars + arrowIndex;
+            line =
+              line.substring(0, arrowIndex) + line.substring(arrowIndex + 1);
+          }
+        } else {
+          const arrowIndex = line.indexOf("<");
+          if (arrowIndex >= 0) {
+            acc.folds.push({ from: acc.foldFrom, to: acc.chars + arrowIndex });
+            acc.foldFrom = null;
+            line =
+              line.substring(0, arrowIndex) + line.substring(arrowIndex + 1);
+          }
         }
+
         if (line.includes("#hidden")) {
           line = line.replace("#hidden", "").trim();
           acc.hidden.push(lineNo);
         }
 
-        if (!acc.from) {
+        if (acc.anchor === null) {
           const dashIndex = line.indexOf("|");
           if (dashIndex >= 0) {
-            acc.from = {
-              line: lineNo,
-              ch: dashIndex,
-            };
+            acc.anchor = acc.chars + dashIndex;
             line = line.substring(0, dashIndex) + line.substring(dashIndex + 1);
           }
         }
 
-        if (!acc.to) {
+        if (acc.head === null) {
           const dashIndex = line.indexOf("|");
           if (dashIndex >= 0) {
-            acc.to = {
-              line: lineNo,
-              ch: dashIndex,
-            };
+            acc.head = acc.chars + dashIndex;
             line = line.substring(0, dashIndex) + line.substring(dashIndex + 1);
           }
         }
 
+        acc.chars += line.length;
+        acc.chars += 1;
         acc.lines.push(line);
 
         return acc;
       },
       {
-        from: null as CodeMirror.Position | null,
-        to: null as CodeMirror.Position | null,
         lines: [] as string[],
-        folds: [] as number[],
+        chars: 0,
+        anchor: null as number | null,
+        head: null as number | null,
+        foldFrom: null as number | null,
+        folds: [] as IFold[],
         hidden: [] as number[],
       }
     );
-    if (!acc.from) {
-      acc.from = { line: 0, ch: 0 };
+    if (acc.anchor === null) {
+      acc.anchor = 0;
     }
-    if (!acc.to) {
-      acc.to = { ...acc.from };
+    if (acc.head === null) {
+      acc.head = acc.anchor;
     }
 
     return {
       hidden: acc.hidden,
       folds: acc.folds,
-      selections: [{ from: acc.from, to: acc.to }],
+      selections: [{ anchor: acc.anchor, head: acc.head }],
       value: acc.lines.join("\n"),
     };
   }

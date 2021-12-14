@@ -1,9 +1,12 @@
-.zoom-plugin-hidden-row {
-  display: none;
+.zoom-plugin-header {
+  padding: 10px 0 12px 35px;
+  max-width: 760px;
+  margin: auto;
+  box-sizing: border-box;
 }
 
-.zoom-plugin-header {
-  padding: 20px 0 0 20px;
+.is-mobile .zoom-plugin-header {
+  padding: 20px 0 20px 35px;
 }
 
 .zoom-plugin-title {
@@ -11,22 +14,25 @@
   cursor: pointer;
 }
 
-.outliner-plugin-bls.zoom-plugin-bls-zoom
-  .cm-s-obsidian
-  span.cm-formatting-list-ul:before {
+.zoom-plugin-delimiter {
+  display: inline-block;
+  margin: 0 10px 0 10px;
+}
+
+.is-mobile .zoom-plugin-delimiter {
+  margin: 0 20px 0 20px;
+}
+
+.zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ol {
   cursor: pointer;
 }
 
-.zoom-plugin-bls-zoom:not(.outliner-plugin-bls)
-  .cm-s-obsidian
-  span.cm-formatting-list-ul {
+.zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ul:hover:before,
+.zoom-plugin-bls-zoom .cm-editor .list-bullet:hover:before {
   cursor: pointer;
-}
-
-.outliner-plugin-bls.zoom-plugin-bls-zoom
-  .cm-s-obsidian
-  span.cm-formatting-list-ul:hover:before {
-  font-size: 42px;
-  margin-left: -8px;
-  margin-top: -21px;
+  content: "•";
+  font-size: 200%;
+  position: absolute;
+  margin-top: -11px;
+  margin-left: -5px;
 }

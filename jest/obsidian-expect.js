@@ -4,27 +4,34 @@ function stateToString(state) {
   const lines = state.value.split("\n");
 
   const sels = state.selections.reduce((acc, sel) => {
-    acc.set(sel.from.line + "_" + sel.from.ch, "from");
-    acc.set(sel.to.line + "_" + sel.to.ch, "to");
+    acc.set(sel.anchor, "anchor");
+    acc.set(sel.head, "head");
+    return acc;
+  }, new Map());
+
+  const folds = state.folds.reduce((acc, sel) => {
+    acc.set(sel.from, "from");
+    acc.set(sel.to, "to");
     return acc;
   }, new Map());
 
   let res = "";
+  let totalC = 0;
 
   for (let l = 0; l < lines.length; l++) {
     const line = lines[l];
 
     for (let c = 0; c <= line.length; c++) {
-      if (sels.has(l + "_" + c)) {
+      if (sels.has(totalC)) {
         res += "|";
+      }
+      if (folds.has(totalC)) {
+        res += folds.get(totalC) === "from" ? ">" : "<";
       }
       if (c < line.length) {
         res += line[c];
+        totalC++;
       }
-    }
-
-    if (state.folds.includes(l)) {
-      res += " #folded";
     }
 
     if (state.hidden.includes(l)) {
@@ -32,6 +39,7 @@ function stateToString(state) {
     }
 
     res += "\n";
+    totalC++;
   }
 
   return res;

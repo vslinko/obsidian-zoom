@@ -5,19 +5,19 @@ declare namespace jest {
   }
 }
 
-interface IPosition {
-  line: number;
-  ch: number;
+interface IFold {
+  from: number;
+  to: number;
 }
 
 interface ISelection {
-  from: IPosition;
-  to: IPosition;
+  anchor: number;
+  head: number;
 }
 
 interface IState {
   hidden: number[];
-  folds: number[];
+  folds: IFold[];
   selections: ISelection[];
   value: string;
 }

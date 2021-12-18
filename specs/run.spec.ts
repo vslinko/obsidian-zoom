@@ -1,8 +1,7 @@
 /**
  * @jest-environment ./jest/obsidian-environment
  */
-
-import { readdirSync, readFileSync } from "fs";
+import { readFileSync, readdirSync } from "fs";
 
 const files = readdirSync(__dirname);
 
@@ -16,7 +15,12 @@ interface IExecuteCommandById {
   command: string;
 }
 
-type Action = ISimulateKeydown | IExecuteCommandById;
+interface IReplaceSelection {
+  type: "replaceSelection";
+  char: string;
+}
+
+type Action = ISimulateKeydown | IExecuteCommandById | IReplaceSelection;
 
 interface ITestDesc {
   title: string;
@@ -47,6 +51,9 @@ function registerTest(desc: ITestDesc) {
           break;
         case "executeCommandById":
           await executeCommandById(action.command);
+          break;
+        case "replaceSelection":
+          await replaceSelection(action.char);
           break;
       }
     }
@@ -86,6 +93,14 @@ for (const file of files) {
         desc.actions.push({
           type: "simulateKeydown",
           key: line.replace(/^- keydown: `/, "").slice(0, -1),
+        });
+      } else if (
+        sm === "looking-for-actions" &&
+        /^- replaceSelection: `[^`]+`$/.test(line)
+      ) {
+        desc.actions.push({
+          type: "replaceSelection",
+          char: line.replace(/^- replaceSelection: `/, "").slice(0, -1),
         });
       } else if (
         sm === "looking-for-actions" &&

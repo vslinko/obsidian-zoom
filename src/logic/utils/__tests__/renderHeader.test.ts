@@ -27,7 +27,7 @@ test("should handle click on document link", () => {
     onClick,
   });
 
-  h.querySelectorAll(".zoom-plugin-title")[0].click();
+  h.querySelectorAll<HTMLSpanElement>(".zoom-plugin-title")[0].click();
 
   expect(onClick).toHaveBeenCalledWith(null);
 });
@@ -42,7 +42,7 @@ test("should handle click on header link", () => {
     onClick,
   });
 
-  h.querySelectorAll(".zoom-plugin-title")[1].click();
+  h.querySelectorAll<HTMLSpanElement>(".zoom-plugin-title")[1].click();
 
   expect(onClick).toHaveBeenCalledWith(10);
 });

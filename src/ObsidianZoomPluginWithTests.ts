@@ -6,6 +6,7 @@ import { EditorView, runScopeHandlers } from "@codemirror/view";
 
 import ObsidianZoomPlugin from "./ObsidianZoomPlugin";
 import { ZoomFeature } from "./features/ZoomFeature";
+import { zoomOutEffect } from "./logic/utils/effects";
 
 const keysMap: { [key: string]: number } = {
   Backspace: 8,
@@ -28,6 +29,10 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
   executeCommandById(id: string) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.app as any).commands.executeCommandById(id);
+  }
+
+  replaceSelection(char: string) {
+    this.editorView.dispatch(this.editorView.state.replaceSelection(char));
   }
 
   simulateKeydown(keys: string) {
@@ -139,6 +144,9 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
           case "simulateKeydown":
             this.simulateKeydown(data);
             break;
+          case "replaceSelection":
+            this.replaceSelection(data);
+            break;
           case "executeCommandById":
             this.executeCommandById(data);
             break;
@@ -151,6 +159,9 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
         }
       } catch (e) {
         error = String(e);
+        if (e.stack) {
+          error += "\n" + e.stack;
+        }
       }
 
       ws.send(JSON.stringify({ id, data: result, error }));
@@ -169,6 +180,9 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
       state = this.parseState(state);
     }
 
+    this.editorView.dispatch({
+      effects: [zoomOutEffect.of()],
+    });
     this.editorView.dispatch({
       changes: [{ from: 0, to: this.editorView.state.doc.length, insert: "" }],
     });

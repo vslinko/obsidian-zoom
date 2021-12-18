@@ -24,7 +24,7 @@ export class LimitSelectionWhenZoomedIn {
 
     const range =
       this.calculateVisibleContentRange.calculateVisibleContentRange(
-        tr.startState
+        tr.state
       );
 
     if (!range) {

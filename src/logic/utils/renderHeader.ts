@@ -21,8 +21,8 @@ export function renderHeader(
     const breadcrumb = breadcrumbs[i];
     const b = doc.createElement("a");
     b.classList.add("zoom-plugin-title");
-    b.innerText = breadcrumb.title;
     b.dataset.pos = String(breadcrumb.pos);
+    b.appendChild(doc.createTextNode(breadcrumb.title));
     b.addEventListener("click", (e) => {
       e.preventDefault();
       const t = e.target as HTMLAnchorElement;

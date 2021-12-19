@@ -1,4 +1,6 @@
-# Should zoom
+# Should zoom in
+
+- applyState:
 
 ```md
 text
@@ -17,6 +19,7 @@ text
 ```
 
 - execute: `obsidian-zoom:zoom-in`
+- assertState:
 
 ```md
 text #hidden
@@ -34,22 +37,42 @@ text
 text #hidden
 ```
 
-# Reproduce steps for #39
+# Should zoom out
+
+- applyState:
 
 ```md
-# h1|
+text
 
-# h2
+# 1
+
+text
+
+## 1.1|
+
+text
+
+# 2
+
+text
 ```
 
 - execute: `obsidian-zoom:zoom-in`
-- keydown: `ArrowDown`
-- replaceSelection: `a`
-- replaceSelection: `b`
-- replaceSelection: `c`
+- execute: `obsidian-zoom:zoom-out`
+- assertState:
 
 ```md
-# h1
-abc|
-# h2 #hidden
+text
+
+# 1
+
+text
+
+## 1.1|
+
+text
+
+# 2
+
+text
 ```

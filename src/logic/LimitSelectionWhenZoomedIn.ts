@@ -22,6 +22,12 @@ export class LimitSelectionWhenZoomedIn {
       return tr;
     }
 
+    const userEvent = tr.annotation(Transaction.userEvent);
+
+    if (!userEvent || !userEvent.startsWith("select")) {
+      return tr;
+    }
+
     const range =
       this.calculateVisibleContentRange.calculateVisibleContentRange(tr.state);
 

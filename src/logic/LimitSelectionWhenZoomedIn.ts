@@ -18,13 +18,7 @@ export class LimitSelectionWhenZoomedIn {
   }
 
   private limitSelectionWhenZoomedIn = (tr: Transaction) => {
-    if (!tr.selection) {
-      return tr;
-    }
-
-    const userEvent = tr.annotation(Transaction.userEvent);
-
-    if (!userEvent || !userEvent.startsWith("select")) {
+    if (!tr.selection || !tr.isUserEvent("select")) {
       return tr;
     }
 

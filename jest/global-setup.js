@@ -68,6 +68,8 @@ async function prepareVault() {
   debug(`Prepare vault`);
 
   const vaultConfigFilePath = ".obsidian/app.json";
+  const vaultCommunityPluginsConfigFilePath =
+    ".obsidian/community-plugins.json";
   const vaultPluginDir = ".obsidian/plugins/obsidian-zoom";
 
   if (!fs.existsSync(vaultConfigFilePath)) {
@@ -77,20 +79,33 @@ async function prepareVault() {
   }
 
   const vaultConfig = JSON.parse(fs.readFileSync(vaultConfigFilePath));
-  if (!vaultConfig.enabledPlugins) {
-    vaultConfig.enabledPlugins = [];
-  }
-  vaultConfig.foldHeading = true;
-  vaultConfig.foldIndent = true;
-  vaultConfig.useTab = false;
-  vaultConfig.tabSize = 2;
-  vaultConfig.legacyEditor = false;
-  if (!vaultConfig.enabledPlugins.includes("obsidian-zoom")) {
-    debug(`  Enabling obsidian-zoom plugin`);
-    vaultConfig.enabledPlugins.push("obsidian-zoom");
-
+  const newVaultConfig = {
+    ...vaultConfig,
+    foldHeading: true,
+    foldIndent: true,
+    useTab: false,
+    tabSize: 2,
+    legacyEditor: false,
+  };
+  if (JSON.stringify(vaultConfig) !== JSON.stringify(newVaultConfig)) {
     debug(`  Saving ${vaultConfigFilePath}`);
-    fs.writeFileSync(vaultConfigFilePath, JSON.stringify(vaultConfig));
+    fs.writeFileSync(vaultConfigFilePath, JSON.stringify(newVaultConfig));
+  }
+
+  const vaultCommunityPluginsConfig = fs.existsSync(
+    vaultCommunityPluginsConfigFilePath
+  )
+    ? JSON.parse(fs.readFileSync(vaultCommunityPluginsConfigFilePath))
+    : [];
+  if (!vaultCommunityPluginsConfig.includes("obsidian-zoom")) {
+    debug(`  Enabling obsidian-zoom plugin`);
+    vaultCommunityPluginsConfig.push("obsidian-zoom");
+
+    debug(`  Saving ${vaultCommunityPluginsConfigFilePath}`);
+    fs.writeFileSync(
+      vaultCommunityPluginsConfigFilePath,
+      JSON.stringify(vaultCommunityPluginsConfig)
+    );
   }
 
   debug(`  Disabling Safe Mode`);

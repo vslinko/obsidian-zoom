@@ -94,11 +94,25 @@ export class KeepOnlyZoomedContentVisible {
     view.dispatch({
       effects: [effect],
     });
+    view.dispatch({
+      effects: [
+        EditorView.scrollIntoView(view.state.selection.main, {
+          y: "start",
+        }),
+      ],
+    });
   }
 
   public showAllContent(view: EditorView) {
     this.logger.log("KeepOnlyZoomedContent:showAllContent", "show all content");
 
     view.dispatch({ effects: [zoomOutEffect.of()] });
+    view.dispatch({
+      effects: [
+        EditorView.scrollIntoView(view.state.selection.main, {
+          y: "center",
+        }),
+      ],
+    });
   }
 }

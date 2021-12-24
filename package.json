@@ -1,6 +1,6 @@
 {
   "name": "obsidian-zoom",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Zoom into heading and lists.",
   "main": "main.js",
   "scripts": {

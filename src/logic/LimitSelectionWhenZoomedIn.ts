@@ -1,5 +1,7 @@
 import { EditorState, Transaction } from "@codemirror/state";
 
+import { LoggerService } from "src/services/LoggerService";
+
 import { calculateLimitedSelection } from "./utils/calculateLimitedSelection";
 
 export interface CalculateVisibleContentRange {
@@ -10,6 +12,7 @@ export interface CalculateVisibleContentRange {
 
 export class LimitSelectionWhenZoomedIn {
   constructor(
+    private logger: LoggerService,
     private calculateVisibleContentRange: CalculateVisibleContentRange
   ) {}
 
@@ -38,6 +41,12 @@ export class LimitSelectionWhenZoomedIn {
     if (!newSelection) {
       return tr;
     }
+
+    this.logger.log(
+      "LimitSelectionWhenZoomedIn:limitSelectionWhenZoomedIn",
+      "limiting selection",
+      newSelection.toJSON()
+    );
 
     return [tr, { selection: newSelection }];
   };

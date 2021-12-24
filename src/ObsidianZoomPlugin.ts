@@ -44,10 +44,15 @@ export default class ObsidianZoomPlugin extends Plugin {
 
     const settingsTabFeature = new SettingsTabFeature(this, settings);
     const zoomFeature = new ZoomFeature(this, logger);
-    const limitSelectionFeature = new LimitSelectionFeature(this, zoomFeature);
+    const limitSelectionFeature = new LimitSelectionFeature(
+      this,
+      logger,
+      zoomFeature
+    );
     const resetZoomWhenVisibleContentBoundariesViolatedFeature =
       new ResetZoomWhenVisibleContentBoundariesViolatedFeature(
         this,
+        logger,
         zoomFeature,
         zoomFeature
       );

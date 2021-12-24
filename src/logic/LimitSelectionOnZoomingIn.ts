@@ -1,9 +1,13 @@
 import { EditorState, Transaction } from "@codemirror/state";
 
+import { LoggerService } from "src/services/LoggerService";
+
 import { calculateLimitedSelection } from "./utils/calculateLimitedSelection";
 import { ZoomInStateEffect, isZoomInEffect } from "./utils/effects";
 
 export class LimitSelectionOnZoomingIn {
+  constructor(private logger: LoggerService) {}
+
   getExtension() {
     return EditorState.transactionFilter.of(this.limitSelectionOnZoomingIn);
   }
@@ -24,6 +28,12 @@ export class LimitSelectionOnZoomingIn {
     if (!newSelection) {
       return tr;
     }
+
+    this.logger.log(
+      "LimitSelectionOnZoomingIn:limitSelectionOnZoomingIn",
+      "limiting selection",
+      newSelection.toJSON()
+    );
 
     return [tr, { selection: newSelection }];
   };

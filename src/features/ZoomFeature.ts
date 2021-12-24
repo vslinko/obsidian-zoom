@@ -46,6 +46,9 @@ export class ZoomFeature implements Feature {
   }
 
   public zoomIn(view: EditorView, pos: number) {
+    const l = this.logger.bind("ZoomFeature:zoomIn");
+    l("zooming in");
+
     if (!isFoldingEnabled(this.plugin.app)) {
       new Notice(
         `In order to zoom, you must first enable "Fold heading" and "Fold indent" under Settings -> Editor`
@@ -59,6 +62,7 @@ export class ZoomFeature implements Feature {
     );
 
     if (!range) {
+      l("unable to calculate range for zooming");
       return;
     }
 
@@ -74,6 +78,9 @@ export class ZoomFeature implements Feature {
   }
 
   public zoomOut(view: EditorView) {
+    const l = this.logger.bind("ZoomFeature:zoomIn");
+    l("zooming out");
+
     this.keepOnlyZoomedContentVisible.showAllContent(view);
 
     for (const cb of this.zoomOutCallbacks) {

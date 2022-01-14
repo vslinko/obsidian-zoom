@@ -1,4 +1,4 @@
-import { Notice, Plugin, addIcon } from "obsidian";
+import { Plugin, addIcon } from "obsidian";
 
 import { Feature } from "./features/Feature";
 import { HeaderNavigationFeature } from "./features/HeaderNavigationFeature";
@@ -89,15 +89,5 @@ export default class ObsidianZoomPlugin extends Plugin {
     for (const feature of this.features) {
       await feature.unload();
     }
-  }
-
-  private isLegacyEditorEnabled() {
-    const config: { legacyEditor: boolean } = {
-      legacyEditor: true,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ...(this.app.vault as any).config,
-    };
-
-    return config.legacyEditor;
   }
 }

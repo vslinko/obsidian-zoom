@@ -26,14 +26,6 @@ export default class ObsidianZoomPlugin extends Plugin {
   async onload() {
     console.log(`Loading obsidian-zoom`);
 
-    if (this.isLegacyEditorEnabled()) {
-      new Notice(
-        `Zoom plugin does not support legacy editor mode starting from version 0.2. Please disable the "Use legacy editor" option or manually install version 0.1 of Zoom plugin.`,
-        30000
-      );
-      return;
-    }
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).ObsidianZoomPlugin = this;
 

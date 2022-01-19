@@ -6,7 +6,7 @@
 **Zoom into heading and lists**
 
 ⁉️ [Discuss ideas or ask a question](https://github.com/vslinko/obsidian-zoom/discussions)<br>
-⚙️ [Follow the development process](https://github.com/users/vslinko/projects/2)<br>
+⚙️ [Follow the development process](https://github.com/users/vslinko/projects/3/views/1)<br>
 🐛 [Report issues](https://github.com/vslinko/obsidian-zoom/issues)
 
 ## Demo

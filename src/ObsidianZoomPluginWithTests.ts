@@ -5,7 +5,6 @@ import { EditorSelection, StateField } from "@codemirror/state";
 import { EditorView, runScopeHandlers } from "@codemirror/view";
 
 import ObsidianZoomPlugin from "./ObsidianZoomPlugin";
-import { ZoomFeature } from "./features/ZoomFeature";
 import { zoomOutEffect } from "./logic/utils/effects";
 
 const keysMap: { [key: string]: number } = {
@@ -204,13 +203,9 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
   getCurrentState(): IState {
     const hidden: number[] = [];
 
-    const f = this.features.find(
-      (f): f is ZoomFeature => f instanceof ZoomFeature
+    const hiddenRanges = this.zoomFeature.calculateHiddenContentRanges(
+      this.editorView.state
     );
-
-    const hiddenRanges = f
-      ? f.calculateHiddenContentRanges(this.editorView.state)
-      : [];
     for (const i of hiddenRanges) {
       const lineFrom = this.editorView.state.doc.lineAt(i.from).number - 1;
       const lineTo = this.editorView.state.doc.lineAt(i.to).number - 1;

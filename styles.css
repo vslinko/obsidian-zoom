@@ -27,8 +27,7 @@
   cursor: pointer;
 }
 
-.zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ul:hover:before,
-.zoom-plugin-bls-zoom .cm-editor .list-bullet:hover:before {
+.zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ul:hover:before {
   cursor: pointer;
   content: "•";
   font-size: 200%;

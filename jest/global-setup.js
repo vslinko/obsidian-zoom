@@ -73,8 +73,8 @@ async function prepareVault() {
   const vaultPluginDir = ".obsidian/plugins/obsidian-zoom";
 
   if (!fs.existsSync(vaultConfigFilePath)) {
-    debug("  Running Obsidian for 5 seconds to setup vault");
-    await runForAWhile(5000);
+    debug("  Running Obsidian for 10 seconds to setup vault");
+    await runForAWhile(10000);
     await wait(1000);
   }
 

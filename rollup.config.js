@@ -14,8 +14,6 @@ export default (commandLineArgs) => ({
   },
   external: [
     "obsidian",
-    "codemirror",
-    "@codemirror/fold",
     "@codemirror/language",
     "@codemirror/state",
     "@codemirror/view",

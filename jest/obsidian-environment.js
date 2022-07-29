@@ -1,7 +1,7 @@
-const NodeEnvironment = require("jest-environment-node");
+const { TestEnvironment } = require("jest-environment-node");
 const WebSocket = require("ws");
 
-module.exports = class CustomEnvironment extends NodeEnvironment {
+module.exports = class CustomEnvironment extends TestEnvironment {
   async setup() {
     await super.setup();
 
@@ -25,7 +25,8 @@ module.exports = class CustomEnvironment extends NodeEnvironment {
       this.runCommand("simulateKeydown", data);
     this.global.executeCommandById = (data) =>
       this.runCommand("executeCommandById", data);
-    this.global.replaceSelection = (data) => this.runCommand("replaceSelection", data);
+    this.global.replaceSelection = (data) =>
+      this.runCommand("replaceSelection", data);
     this.global.parseState = (data) => this.runCommand("parseState", data);
     this.global.getCurrentState = () => this.runCommand("getCurrentState");
   }

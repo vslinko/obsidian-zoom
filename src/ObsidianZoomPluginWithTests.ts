@@ -1,6 +1,6 @@
 import { editorEditorField } from "obsidian";
 
-import { foldEffect, foldedRanges } from "@codemirror/fold";
+import { foldEffect, foldedRanges } from "@codemirror/language";
 import { EditorSelection, StateField } from "@codemirror/state";
 import { EditorView, runScopeHandlers } from "@codemirror/view";
 

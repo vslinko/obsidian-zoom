@@ -1,4 +1,4 @@
-import { RangeSet, RangeValue } from "@codemirror/rangeset";
+import { RangeSet, RangeValue } from "@codemirror/state";
 
 export function rangeSetToArray<T extends RangeValue>(
   rs: RangeSet<T>

@@ -1,6 +1,5 @@
-import { showPanel } from "@codemirror/panel";
 import { StateEffect, StateField } from "@codemirror/state";
-import { EditorView } from "@codemirror/view";
+import { EditorView, showPanel } from "@codemirror/view";
 
 import { renderHeader } from "./utils/renderHeader";
 

@@ -29,7 +29,7 @@ function runForAWhile(timeout) {
     const obsidian = cp.spawn(OBSIDIAN_APP_CMD);
     obsidian.on("error", reject);
     await wait(timeout);
-    obsidian.kill();
+    obsidian.kill('SIGKILL');
     resolve();
   });
 }

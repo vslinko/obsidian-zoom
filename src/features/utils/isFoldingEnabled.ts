@@ -5,8 +5,8 @@ export function isFoldingEnabled(app: App) {
     foldHeading: boolean;
     foldIndent: boolean;
   } = {
-    foldHeading: false,
-    foldIndent: false,
+    foldHeading: true,
+    foldIndent: true,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...(app.vault as any).config,
   };

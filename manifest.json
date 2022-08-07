@@ -1,7 +1,7 @@
 {
   "id": "obsidian-zoom",
   "name": "Zoom",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "minAppVersion": "0.15.9",
   "description": "Zoom into heading and lists.",
   "author": "Viacheslav Slinko",

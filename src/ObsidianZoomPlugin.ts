@@ -140,8 +140,12 @@ export default class ObsidianZoomPlugin extends Plugin {
   }
 
   private isLegacyEditorEnabled() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const config = (this.app.vault as any).config;
-    return (!("legacyEditor" in config) && true) || config.legacyEditor;
+    const config: { legacyEditor: boolean } = {
+      legacyEditor: false,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(this.app.vault as any).config,
+    };
+
+    return config.legacyEditor;
   }
 }

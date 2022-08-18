@@ -13,7 +13,11 @@ class ObsidianZoomPluginSettingTab extends PluginSettingTab {
     const { containerEl } = this;
 
     containerEl.empty();
-
+    
+    containerEl.createEl("h2", {
+      text: "Zoom",
+    });
+    
     new Setting(containerEl)
       .setName("Zooming in when clicking on the bullet")
       .addToggle((toggle) => {

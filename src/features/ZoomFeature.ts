@@ -96,7 +96,7 @@ export class ZoomFeature implements Feature {
     this.plugin.addCommand({
       id: "zoom-in",
       name: "Zoom in",
-      icon: "obsidian-zoom-zoom-in",
+      icon: "zoom-in",
       editorCallback: (editor) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const view: EditorView = (editor as any).cm;
@@ -113,7 +113,7 @@ export class ZoomFeature implements Feature {
     this.plugin.addCommand({
       id: "zoom-out",
       name: "Zoom out the entire document",
-      icon: "obsidian-zoom-zoom-out",
+      icon: "zoom-out",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       editorCallback: (editor) => this.zoomOut((editor as any).cm),
       hotkeys: [

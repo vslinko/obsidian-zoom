@@ -1,4 +1,4 @@
-import { Editor, Notice, Plugin, addIcon } from "obsidian";
+import { Editor, Plugin, addIcon } from "obsidian";
 
 import { EditorView } from "@codemirror/view";
 
@@ -28,14 +28,6 @@ export default class ObsidianZoomPlugin extends Plugin {
 
   async onload() {
     console.log(`Loading obsidian-zoom`);
-
-    if (this.isLegacyEditorEnabled()) {
-      new Notice(
-        `Zoom plugin does not support legacy editor mode starting from version 0.2. Please disable the "Use legacy editor" option or manually install version 0.1 of Zoom plugin.`,
-        30000
-      );
-      return;
-    }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).ObsidianZoomPlugin = this;
@@ -137,15 +129,5 @@ export default class ObsidianZoomPlugin extends Plugin {
     const cm: EditorView = (editor as any).cm;
     const pos = cm.state.doc.line(line + 1).from;
     this.zoomFeature.zoomIn(cm, pos);
-  }
-
-  private isLegacyEditorEnabled() {
-    const config: { legacyEditor: boolean } = {
-      legacyEditor: false,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ...(this.app.vault as any).config,
-    };
-
-    return config.legacyEditor;
   }
 }

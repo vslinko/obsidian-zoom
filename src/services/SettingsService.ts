@@ -1,3 +1,5 @@
+import { Platform } from "obsidian";
+
 export interface ObsidianZoomPluginSettings {
   debug: boolean;
   zoomOnClick: boolean;
@@ -5,7 +7,7 @@ export interface ObsidianZoomPluginSettings {
 
 const DEFAULT_SETTINGS: ObsidianZoomPluginSettings = {
   debug: false,
-  zoomOnClick: true,
+  zoomOnClick: Platform.isDesktop,
 };
 
 export interface Storage {

@@ -5,23 +5,41 @@ export interface ObsidianZoomPluginSettings {
   zoomOnClick: boolean;
 }
 
-const DEFAULT_SETTINGS: ObsidianZoomPluginSettings = {
+interface ObsidianZoomPluginSettingsJson {
+  debug: boolean;
+  zoomOnClick: boolean;
+  zoomOnClickMobile: boolean;
+}
+
+const DEFAULT_SETTINGS: ObsidianZoomPluginSettingsJson = {
   debug: false,
-  zoomOnClick: Platform.isDesktop,
+  zoomOnClick: true,
+  zoomOnClickMobile: false,
 };
 
 export interface Storage {
-  loadData(): Promise<ObsidianZoomPluginSettings>;
-  saveData(settigns: ObsidianZoomPluginSettings): Promise<void>;
+  loadData(): Promise<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  saveData(settigns: any): Promise<void>; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 type K = keyof ObsidianZoomPluginSettings;
 type V<T extends K> = ObsidianZoomPluginSettings[T];
 type Callback<T extends K> = (cb: V<T>) => void;
 
+const zoomOnClickProp = Platform.isDesktop
+  ? "zoomOnClick"
+  : "zoomOnClickMobile";
+
+const mappingToJson = {
+  zoomOnClick: zoomOnClickProp,
+  debug: "debug",
+} as {
+  [key in keyof ObsidianZoomPluginSettings]: keyof ObsidianZoomPluginSettingsJson;
+};
+
 export class SettingsService implements ObsidianZoomPluginSettings {
   private storage: Storage;
-  private values: ObsidianZoomPluginSettings;
+  private values: ObsidianZoomPluginSettingsJson;
   private handlers: Map<K, Set<Callback<K>>>;
 
   constructor(storage: Storage) {
@@ -37,7 +55,7 @@ export class SettingsService implements ObsidianZoomPluginSettings {
   }
 
   get zoomOnClick() {
-    return this.values.zoomOnClick;
+    return this.values[mappingToJson.zoomOnClick];
   }
   set zoomOnClick(value: boolean) {
     this.set("zoomOnClick", value);
@@ -72,7 +90,7 @@ export class SettingsService implements ObsidianZoomPluginSettings {
   }
 
   private set<T extends K>(key: T, value: V<K>): void {
-    this.values[key] = value;
+    this.values[mappingToJson[key]] = value;
     const callbacks = this.handlers.get(key);
 
     if (!callbacks) {

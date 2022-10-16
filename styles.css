@@ -23,15 +23,24 @@
   margin: 0 20px 0 20px;
 }
 
-.zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ol {
+.zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ol,
+.zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ul {
   cursor: pointer;
 }
 
-.zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ul:hover:before {
-  cursor: pointer;
-  content: "•";
-  font-size: 200%;
-  position: absolute;
-  margin-top: -11px;
-  margin-left: -5px;
+.zoom-plugin-bls-zoom
+  .markdown-source-view.mod-cm6
+  .cm-fold-indicator
+  .collapse-indicator {
+  margin-right: 6px;
+  padding-right: 0;
+}
+
+.zoom-plugin-bls-zoom
+  .markdown-source-view.mod-cm6
+  .cm-line:not(.cm-active):not(.HyperMD-header):not(.HyperMD-task-line)
+  .cm-fold-indicator
+  .collapse-indicator {
+  margin-right: 18px;
+  padding-right: 0;
 }

@@ -1,20 +1,19 @@
 .zoom-plugin-header {
   display: flex;
-  padding: var(--size-4-2) var(--file-margins);
-}
-
-.is-mobile .zoom-plugin-header {
-  padding: 20px 0 20px 35px;
+  flex-wrap: wrap;
+  margin: var(--file-margins);
+  margin-top: var(--size-4-2);
+  margin-bottom: var(--size-4-2);
 }
 
 .zoom-plugin-title {
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 0 var(--size-4-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .zoom-plugin-delimiter {
   display: inline-block;
+  padding: 0 var(--size-4-2);
 }
 
 .zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ol,

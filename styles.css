@@ -1,8 +1,6 @@
 .zoom-plugin-header {
-  padding: 10px 0 12px 35px;
-  max-width: 760px;
-  margin: auto;
-  box-sizing: border-box;
+  display: flex;
+  padding: var(--size-4-2) var(--file-margins);
 }
 
 .is-mobile .zoom-plugin-header {
@@ -12,15 +10,11 @@
 .zoom-plugin-title {
   text-decoration: underline;
   cursor: pointer;
+  padding: 0 var(--size-4-2);
 }
 
 .zoom-plugin-delimiter {
   display: inline-block;
-  margin: 0 10px 0 10px;
-}
-
-.is-mobile .zoom-plugin-delimiter {
-  margin: 0 20px 0 20px;
 }
 
 .zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ol,
@@ -43,4 +37,8 @@
   .collapse-indicator {
   margin-right: 18px;
   padding-right: 0;
+}
+
+.markdown-source-view.mod-cm6 .cm-panels {
+  border-bottom-color: var(--background-modifier-border);
 }

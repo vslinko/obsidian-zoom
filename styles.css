@@ -1,26 +1,19 @@
 .zoom-plugin-header {
-  padding: 10px 0 12px 35px;
-  max-width: 760px;
-  margin: auto;
-  box-sizing: border-box;
-}
-
-.is-mobile .zoom-plugin-header {
-  padding: 20px 0 20px 35px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: var(--file-margins);
+  margin-top: var(--size-4-2);
+  margin-bottom: var(--size-4-2);
 }
 
 .zoom-plugin-title {
-  text-decoration: underline;
-  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .zoom-plugin-delimiter {
   display: inline-block;
-  margin: 0 10px 0 10px;
-}
-
-.is-mobile .zoom-plugin-delimiter {
-  margin: 0 20px 0 20px;
+  padding: 0 var(--size-4-2);
 }
 
 .zoom-plugin-bls-zoom .cm-editor .cm-formatting-list-ol,
@@ -43,4 +36,8 @@
   .collapse-indicator {
   margin-right: 18px;
   padding-right: 0;
+}
+
+.markdown-source-view.mod-cm6 .cm-panels {
+  border-bottom-color: var(--background-modifier-border);
 }

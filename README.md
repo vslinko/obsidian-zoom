@@ -1,6 +1,6 @@
 # Obsidian Zoom
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/vslinko/obsidian-zoom/Release?logo=github&style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/vslinko/obsidian-zoom/release.yml?style=for-the-badge)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/vslinko/obsidian-zoom?style=for-the-badge&sort=semver)
 
 **Zoom into heading and lists**

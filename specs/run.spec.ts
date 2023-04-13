@@ -22,6 +22,11 @@ interface SimulateKeydown {
   key: string;
 }
 
+interface Platform {
+  type: "platform";
+  platform: string;
+}
+
 interface ExecuteCommandById {
   type: "executeCommandById";
   command: string;
@@ -37,6 +42,7 @@ type Action =
   | AssertState
   | SimulateKeydown
   | ExecuteCommandById
+  | Platform
   | ReplaceSelection;
 
 interface TestDesc {
@@ -45,7 +51,13 @@ interface TestDesc {
 }
 
 function registerTest(desc: TestDesc) {
-  test(desc.title, async () => {
+  const platform = desc.actions.find((a) => a.type === "platform") as
+    | Platform
+    | undefined;
+  const t =
+    platform && process.platform !== platform.platform ? test.skip : test;
+
+  t(desc.title, async () => {
     for (const action of desc.actions) {
       switch (action.type) {
         case "applyState":
@@ -136,6 +148,17 @@ function parseSimulateKeydown(l: LinesIterator): SimulateKeydown {
   };
 }
 
+function parsePlatform(l: LinesIterator): Platform {
+  const platform = l.line.replace(/- platform: `([^`]+)`/, "$1");
+
+  l.nextNotEmpty();
+
+  return {
+    type: "platform",
+    platform,
+  };
+}
+
 function parseExecuteCommandById(l: LinesIterator): ExecuteCommandById {
   const command = l.line.replace(/- execute: `([^`]+)`/, "$1");
 
@@ -175,6 +198,8 @@ function parseAction(l: LinesIterator): Action {
     return parseReplaceSelection(l);
   } else if (l.line.startsWith("- assertState:")) {
     return parseAssertState(l);
+  } else if (l.line.startsWith("- platform:")) {
+    return parsePlatform(l);
   }
 
   throw new Error(`parseAction: Unknown action "${l.line}"`);

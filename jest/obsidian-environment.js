@@ -1,15 +1,30 @@
 const { TestEnvironment } = require("jest-environment-node");
 const WebSocket = require("ws");
 
+let idSeq = 1;
+
 module.exports = class CustomEnvironment extends TestEnvironment {
   async setup() {
     await super.setup();
 
+    this.callbacks = new Map();
+
+    this.createCommand("applyState");
+    this.createCommand("simulateKeydown");
+    this.createCommand("executeCommandById");
+    this.createCommand("replaceSelection");
+    this.createCommand("parseState");
+    this.createCommand("getCurrentState");
+  }
+
+  createCommand(type) {
+    this.global[type] = (data) => this.runCommand(type, data);
+  }
+
+  async initWs() {
     this.ws = new WebSocket("ws://127.0.0.1:8080");
 
     await new Promise((resolve) => this.ws.on("open", resolve));
-
-    this.callbacks = new Map();
 
     this.ws.on("message", (message) => {
       const { id, data, error } = JSON.parse(message);
@@ -19,21 +34,15 @@ module.exports = class CustomEnvironment extends TestEnvironment {
         cb(error, data);
       }
     });
-
-    this.global.applyState = (data) => this.runCommand("applyState", data);
-    this.global.simulateKeydown = (data) =>
-      this.runCommand("simulateKeydown", data);
-    this.global.executeCommandById = (data) =>
-      this.runCommand("executeCommandById", data);
-    this.global.replaceSelection = (data) =>
-      this.runCommand("replaceSelection", data);
-    this.global.parseState = (data) => this.runCommand("parseState", data);
-    this.global.getCurrentState = () => this.runCommand("getCurrentState");
   }
 
   async runCommand(type, data) {
+    if (!this.ws) {
+      await this.initWs();
+    }
+
     return new Promise((resolve, reject) => {
-      const id = Math.random().toString();
+      const id = String(idSeq++);
 
       this.callbacks.set(id, (error, data) => {
         if (error) {

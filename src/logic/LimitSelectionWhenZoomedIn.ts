@@ -1,8 +1,8 @@
 import { EditorState, Transaction } from "@codemirror/state";
 
-import { LoggerService } from "src/services/LoggerService";
-
 import { calculateLimitedSelection } from "./utils/calculateLimitedSelection";
+
+import { LoggerService } from "../services/LoggerService";
 
 export interface CalculateVisibleContentRange {
   calculateVisibleContentRange(

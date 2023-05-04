@@ -1,4 +1,4 @@
-import { Plugin_2 } from "obsidian";
+import { Plugin } from "obsidian";
 
 import { EditorView } from "@codemirror/view";
 
@@ -17,7 +17,7 @@ export class ZoomOnClickFeature implements Feature {
   });
 
   constructor(
-    private plugin: Plugin_2,
+    private plugin: Plugin,
     private settings: SettingsService,
     private zoomIn: ZoomIn
   ) {}

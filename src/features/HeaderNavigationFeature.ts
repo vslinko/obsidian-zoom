@@ -1,4 +1,4 @@
-import { Plugin_2 } from "obsidian";
+import { Plugin } from "obsidian";
 
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
@@ -86,7 +86,7 @@ class UpdateHeaderAfterRangeBeforeVisibleRangeChanged implements Feature {
     );
 
   constructor(
-    private plugin: Plugin_2,
+    private plugin: Plugin,
     private calculateHiddenContentRanges: CalculateHiddenContentRanges,
     private calculateVisibleContentRange: CalculateVisibleContentRange,
     private collectBreadcrumbs: CollectBreadcrumbs,
@@ -147,7 +147,7 @@ export class HeaderNavigationFeature implements Feature {
     );
 
   constructor(
-    private plugin: Plugin_2,
+    private plugin: Plugin,
     private logger: LoggerService,
     private calculateHiddenContentRanges: CalculateHiddenContentRanges,
     private calculateVisibleContentRange: CalculateVisibleContentRange,

@@ -1,7 +1,5 @@
 import { Editor, Plugin } from "obsidian";
 
-import { EditorView } from "@codemirror/view";
-
 import { Feature } from "./features/Feature";
 import { HeaderNavigationFeature } from "./features/HeaderNavigationFeature";
 import { LimitSelectionFeature } from "./features/LimitSelectionFeature";
@@ -12,6 +10,13 @@ import { ZoomFeature } from "./features/ZoomFeature";
 import { ZoomOnClickFeature } from "./features/ZoomOnClickFeature";
 import { LoggerService } from "./services/LoggerService";
 import { SettingsService } from "./services/SettingsService";
+import { getEditorViewFromEditor } from "./utils/getEditorViewFromEditor";
+
+declare global {
+  interface Window {
+    ObsidianZoomPlugin?: ObsidianZoomPlugin;
+  }
+}
 
 export default class ObsidianZoomPlugin extends Plugin {
   protected zoomFeature: ZoomFeature;
@@ -20,8 +25,7 @@ export default class ObsidianZoomPlugin extends Plugin {
   async onload() {
     console.log(`Loading obsidian-zoom`);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).ObsidianZoomPlugin = this;
+    window.ObsidianZoomPlugin = this;
 
     const settings = new SettingsService(this);
     await settings.load();
@@ -77,8 +81,7 @@ export default class ObsidianZoomPlugin extends Plugin {
   async onunload() {
     console.log(`Unloading obsidian-zoom`);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    delete (window as any).ObsidianZoomPlugin;
+    delete window.ObsidianZoomPlugin;
 
     for (const feature of this.features) {
       await feature.unload();
@@ -86,8 +89,7 @@ export default class ObsidianZoomPlugin extends Plugin {
   }
 
   public getZoomRange(editor: Editor) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cm: EditorView = (editor as any).cm;
+    const cm = getEditorViewFromEditor(editor);
     const range = this.zoomFeature.calculateVisibleContentRange(cm.state);
 
     if (!range) {
@@ -110,21 +112,16 @@ export default class ObsidianZoomPlugin extends Plugin {
   }
 
   public zoomOut(editor: Editor) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cm: EditorView = (editor as any).cm;
-    this.zoomFeature.zoomOut(cm);
+    this.zoomFeature.zoomOut(getEditorViewFromEditor(editor));
   }
 
   public zoomIn(editor: Editor, line: number) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cm: EditorView = (editor as any).cm;
+    const cm = getEditorViewFromEditor(editor);
     const pos = cm.state.doc.line(line + 1).from;
     this.zoomFeature.zoomIn(cm, pos);
   }
 
   public refreshZoom(editor: Editor) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cm: EditorView = (editor as any).cm;
-    this.zoomFeature.refreshZoom(cm);
+    this.zoomFeature.refreshZoom(getEditorViewFromEditor(editor));
   }
 }

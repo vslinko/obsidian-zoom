@@ -1,14 +1,13 @@
-import { Plugin_2 } from "obsidian";
+import { Plugin } from "obsidian";
 
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
-
-import { LoggerService } from "src/services/LoggerService";
 
 import { Feature } from "./Feature";
 import { getEditorViewFromEditorState } from "./utils/getEditorViewFromEditorState";
 
 import { DetectVisibleContentBoundariesViolation } from "../logic/DetectVisibleContentBoundariesViolation";
+import { LoggerService } from "../services/LoggerService";
 
 export interface CalculateHiddenContentRanges {
   calculateHiddenContentRanges(
@@ -33,7 +32,7 @@ export class ResetZoomWhenVisibleContentBoundariesViolatedFeature
     );
 
   constructor(
-    private plugin: Plugin_2,
+    private plugin: Plugin,
     private logger: LoggerService,
     private calculateHiddenContentRanges: CalculateHiddenContentRanges,
     private zoomOut: ZoomOut

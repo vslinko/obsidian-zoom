@@ -1,11 +1,11 @@
-import { App, PluginSettingTab, Plugin_2, Setting } from "obsidian";
+import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
 
 import { Feature } from "./Feature";
 
 import { SettingsService } from "../services/SettingsService";
 
 class ObsidianZoomPluginSettingTab extends PluginSettingTab {
-  constructor(app: App, plugin: Plugin_2, private settings: SettingsService) {
+  constructor(app: App, plugin: Plugin, private settings: SettingsService) {
     super(app, plugin);
   }
 
@@ -38,7 +38,7 @@ class ObsidianZoomPluginSettingTab extends PluginSettingTab {
 }
 
 export class SettingsTabFeature implements Feature {
-  constructor(private plugin: Plugin_2, private settings: SettingsService) {}
+  constructor(private plugin: Plugin, private settings: SettingsService) {}
 
   async load() {
     this.plugin.addSettingTab(

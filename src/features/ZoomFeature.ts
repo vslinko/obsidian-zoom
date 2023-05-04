@@ -1,4 +1,4 @@
-import { Notice, Plugin_2 } from "obsidian";
+import { Notice, Plugin } from "obsidian";
 
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
@@ -9,6 +9,7 @@ import { isFoldingEnabled } from "./utils/isFoldingEnabled";
 import { CalculateRangeForZooming } from "../logic/CalculateRangeForZooming";
 import { KeepOnlyZoomedContentVisible } from "../logic/KeepOnlyZoomedContentVisible";
 import { LoggerService } from "../services/LoggerService";
+import { getEditorViewFromEditor } from "../utils/getEditorViewFromEditor";
 
 export type ZoomInCallback = (view: EditorView, pos: number) => void;
 export type ZoomOutCallback = (view: EditorView) => void;
@@ -23,7 +24,7 @@ export class ZoomFeature implements Feature {
 
   private calculateRangeForZooming = new CalculateRangeForZooming();
 
-  constructor(private plugin: Plugin_2, private logger: LoggerService) {}
+  constructor(private plugin: Plugin, private logger: LoggerService) {}
 
   public calculateVisibleContentRange(state: EditorState) {
     return this.keepOnlyZoomedContentVisible.calculateVisibleContentRange(
@@ -125,8 +126,7 @@ export class ZoomFeature implements Feature {
       name: "Zoom in",
       icon: "zoom-in",
       editorCallback: (editor) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const view: EditorView = (editor as any).cm;
+        const view = getEditorViewFromEditor(editor);
         this.zoomIn(view, view.state.selection.main.head);
       },
       hotkeys: [
@@ -141,8 +141,7 @@ export class ZoomFeature implements Feature {
       id: "zoom-out",
       name: "Zoom out the entire document",
       icon: "zoom-out",
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      editorCallback: (editor) => this.zoomOut((editor as any).cm),
+      editorCallback: (editor) => this.zoomOut(getEditorViewFromEditor(editor)),
       hotkeys: [
         {
           modifiers: ["Mod", "Shift"],

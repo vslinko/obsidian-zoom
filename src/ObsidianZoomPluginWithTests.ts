@@ -125,9 +125,9 @@ export default class ObsidianZoomPluginWithTests extends ObsidianZoomPlugin {
   }
 
   async connect() {
-    await this.prepareForTests();
-
     const ws = new WebSocket("ws://127.0.0.1:8080/");
+    await this.prepareForTests();
+    ws.send("ready");
 
     ws.addEventListener("message", (event) => {
       const { id, type, data } = JSON.parse(event.data);

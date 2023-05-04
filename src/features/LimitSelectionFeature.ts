@@ -1,13 +1,12 @@
-import { Plugin_2 } from "obsidian";
+import { Plugin } from "obsidian";
 
 import { EditorState } from "@codemirror/state";
-
-import { LoggerService } from "src/services/LoggerService";
 
 import { Feature } from "./Feature";
 
 import { LimitSelectionOnZoomingIn } from "../logic/LimitSelectionOnZoomingIn";
 import { LimitSelectionWhenZoomedIn } from "../logic/LimitSelectionWhenZoomedIn";
+import { LoggerService } from "../services/LoggerService";
 
 export interface CalculateVisibleContentRange {
   calculateVisibleContentRange(
@@ -25,7 +24,7 @@ export class LimitSelectionFeature implements Feature {
   );
 
   constructor(
-    private plugin: Plugin_2,
+    private plugin: Plugin,
     private logger: LoggerService,
     private calculateVisibleContentRange: CalculateVisibleContentRange
   ) {}

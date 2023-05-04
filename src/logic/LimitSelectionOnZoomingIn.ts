@@ -1,9 +1,9 @@
 import { EditorState, Transaction } from "@codemirror/state";
 
-import { LoggerService } from "src/services/LoggerService";
-
 import { calculateLimitedSelection } from "./utils/calculateLimitedSelection";
 import { ZoomInStateEffect, isZoomInEffect } from "./utils/effects";
+
+import { LoggerService } from "../services/LoggerService";
 
 export class LimitSelectionOnZoomingIn {
   constructor(private logger: LoggerService) {}

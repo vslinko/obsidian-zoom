@@ -121,4 +121,10 @@ export default class ObsidianZoomPlugin extends Plugin {
     const pos = cm.state.doc.line(line + 1).from;
     this.zoomFeature.zoomIn(cm, pos);
   }
+
+  public refreshZoom(editor: Editor) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cm: EditorView = (editor as any).cm;
+    this.zoomFeature.refreshZoom(cm);
+  }
 }

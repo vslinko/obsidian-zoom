@@ -45,6 +45,33 @@ export class ZoomFeature implements Feature {
     this.zoomOutCallbacks.push(cb);
   }
 
+  public refreshZoom(view: EditorView) {
+    const prevRange =
+      this.keepOnlyZoomedContentVisible.calculateVisibleContentRange(
+        view.state
+      );
+
+    if (!prevRange) {
+      return;
+    }
+
+    const newRange = this.calculateRangeForZooming.calculateRangeForZooming(
+      view.state,
+      prevRange.from
+    );
+
+    if (!newRange) {
+      return;
+    }
+
+    this.keepOnlyZoomedContentVisible.keepOnlyZoomedContentVisible(
+      view,
+      newRange.from,
+      newRange.to,
+      { scrollIntoView: false }
+    );
+  }
+
   public zoomIn(view: EditorView, pos: number) {
     const l = this.logger.bind("ZoomFeature:zoomIn");
     l("zooming in");

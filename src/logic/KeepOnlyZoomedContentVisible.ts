@@ -80,8 +80,11 @@ export class KeepOnlyZoomedContentVisible {
   public keepOnlyZoomedContentVisible(
     view: EditorView,
     from: number,
-    to: number
+    to: number,
+    options: { scrollIntoView?: boolean } = {}
   ) {
+    const { scrollIntoView } = { ...{ scrollIntoView: true }, ...options };
+
     const effect = zoomInEffect.of({ from, to });
 
     this.logger.log(
@@ -94,13 +97,16 @@ export class KeepOnlyZoomedContentVisible {
     view.dispatch({
       effects: [effect],
     });
-    view.dispatch({
-      effects: [
-        EditorView.scrollIntoView(view.state.selection.main, {
-          y: "start",
-        }),
-      ],
-    });
+
+    if (scrollIntoView) {
+      view.dispatch({
+        effects: [
+          EditorView.scrollIntoView(view.state.selection.main, {
+            y: "start",
+          }),
+        ],
+      });
+    }
   }
 
   public showAllContent(view: EditorView) {
